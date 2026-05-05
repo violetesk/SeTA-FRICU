@@ -1,0 +1,46 @@
+# ============================================================
+# SeTA Training Configuration
+# ============================================================
+# Transformer-based ICU patient risk prediction model.
+# Modify data paths below to match your local dataset layout.
+# All hyperparameters are tuned for the SeTA model — do not
+# change unless you are re-tuning the model.
+# ============================================================
+
+# Task Configuration — identifies the prediction task
+task:
+  name: risk_predictor
+  description: "Transformer-based ICU patient risk prediction"
+
+# Training Hyperparameters
+training:
+  batch_size: 2                 # Samples per GPU per gradient step
+  d_model: 4096                 # Transformer hidden dimension
+  output_dim: 1440              # Number of output prediction targets
+  num_layers: 6                 # Transformer encoder layers
+  nhead: 32                     # Multi-head attention heads
+  weig: 1.0                     # Loss weighting factor
+  learning_rate: 0.00005        # Peak learning rate (cosine schedule)
+  num_epochs: 750               # Maximum training epochs
+  T_scaling: 1209600.0          # Time-embedding scaling factor (seconds)
+  test_step: 5                  # Evaluate every N epochs
+
+# Data Paths — update these to point to your parquet datasets
+data:
+  train_parquet: data/train     # Directory of training parquet files
+  test_parquet: data/test       # Directory of test parquet files
+
+# Checkpoint & Logging Directories
+checkpoint:
+  log_save_dir: SeTA/logs/      # Training log output directory
+  save_dir: SeTA/checkpoint     # Model checkpoint save directory
+
+# Learning Rate Scheduler
+lr_scheduler:
+  type: cosine                  # Cosine annealing schedule
+  static_max_seq_len: 5246      # Max sequence length for warmup scaling
+  step: 8000                    # Total scheduler step count
+
+# TensorBoard Logging
+logging:
+  tensorboard_dir: "SeTA/logs/tb_log"  # TensorBoard event output directory

@@ -1,0 +1,45 @@
+# ============================================================
+# SeTA Test / Evaluation Configuration
+# ============================================================
+# Used for model evaluation and inference. The model parameters
+# must match the training config used to produce the checkpoint.
+# Update data paths and checkpoint directory as needed.
+# ============================================================
+
+# Task Configuration — identifies the prediction task
+task:
+  name: risk_predictor
+  description: "Transformer-based ICU patient risk prediction"
+
+# Model Parameters — must match the training config exactly
+training:
+  batch_size: 8                 # Evaluation batch size (can be larger than train)
+  d_model: 4096                 # Transformer hidden dimension
+  output_dim: 1440              # Number of output prediction targets
+  num_layers: 6                 # Transformer encoder layers
+  nhead: 32                     # Multi-head attention heads
+  weig: 1.0                     # Loss weighting factor
+  learning_rate: 0.00005        # Learning rate (unused during eval)
+  num_epochs: 750               # Total epochs (for scheduler compatibility)
+  T_scaling: 1209600.0          # Time-embedding scaling factor (seconds)
+  test_step: 5                  # Eval frequency (unused during standalone test)
+
+# Data Paths — update these to point to your evaluation datasets
+data:
+  train_parquet: data/train     # Training data (used for reference metrics)
+  test_parquet: data/test       # Test data for evaluation
+
+# Checkpoint & Logging Directories
+checkpoint:
+  log_save_dir: SeTA/logs/      # Log output directory
+  save_dir: SeTA/checkpoint     # Directory to load saved model checkpoints
+
+# Learning Rate Scheduler — kept for config compatibility
+lr_scheduler:
+  type: cosine                  # Cosine annealing schedule
+  static_max_seq_len: 5246      # Max sequence length for warmup scaling
+  step: 8000                    # Total scheduler step count
+
+# TensorBoard Logging
+logging:
+  tensorboard_dir: "SeTA/logs/tb_log"  # TensorBoard event output directory
